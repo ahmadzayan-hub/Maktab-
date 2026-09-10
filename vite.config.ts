@@ -15,11 +15,18 @@ export default defineConfig({
   build: {
     target: "es2020",
     cssCodeSplit: true,
-    rollupOptions: {
+    rolldownOptions: {
       output: {
-        manualChunks: {
-          react: ["react", "react-dom"],
-          router: ["react-router-dom"],
+        // Rolldown (Vite 8) only accepts the function form of manualChunks.
+        manualChunks(id) {
+          if (id.includes("node_modules/react-router")) return "router";
+          if (
+            id.includes("node_modules/react/") ||
+            id.includes("node_modules/react-dom/") ||
+            id.includes("node_modules/scheduler/")
+          ) {
+            return "react";
+          }
         },
       },
     },
