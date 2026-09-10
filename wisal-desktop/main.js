@@ -10,7 +10,7 @@ function createWindow() {
     height: 760,
     minWidth: 900,
     minHeight: 600,
-    backgroundColor: '#fff7fa',
+    backgroundColor: '#F8F5EF',
     title: 'وصال — Wisal',
     icon: path.join(__dirname, 'build', 'icon.png'),
     autoHideMenuBar: true,

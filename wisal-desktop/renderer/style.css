@@ -1,14 +1,16 @@
 /* وصال لسطح المكتب — تصميم مظبوط للّابتوب (شاشة عريضة) وويندوز. فاتح/غامق. */
 :root{
-  /* لوحة هادئة: لافندر/نعناعي/رملي مع لمسة وردية دافئة كأكسنت */
-  --rose:#E1668F; --plum:#8A76E6; --ink:#242232; --muted:#6f6b82;
-  --bg:#f3f5fb; --panel:#ffffff; --line:#e6e8f4; --side:#eef1fa;
-  --grad:linear-gradient(135deg,#E1668F 0%,#9E7BE6 55%,#6FA8C9 100%);
-  --shadow:0 1px 2px rgba(40,40,80,.05),0 10px 30px rgba(120,110,210,.08);
-  --shadow-3d:0 2px 4px rgba(40,40,80,.06),0 14px 28px rgba(120,110,210,.14),0 28px 60px rgba(110,168,201,.10);
+  /* توكنز وصال الموحّدة (نفس wisal-web): Midnight / Coral / Amber / Teal / Porcelain / Mist */
+  --midnight:#061827; --coral:#FF6E72; --amber:#F2C56B; --teal:#35B8A6;
+  --porcelain:#F8F5EF; --mist:#AAB8C4;
+  --ink:var(--midnight); --muted:#5A6B7A;
+  --bg:var(--porcelain); --panel:#ffffff; --line:#E5DFD3; --side:#F1ECE3;
+  --grad:linear-gradient(135deg,var(--coral) 0%,var(--amber) 100%);
+  --shadow:0 1px 2px rgba(6,24,39,.05),0 10px 30px rgba(6,24,39,.07);
+  --shadow-3d:0 2px 4px rgba(6,24,39,.06),0 14px 28px rgba(255,110,114,.12),0 28px 60px rgba(53,184,166,.08);
 }
 :root[data-theme="dark"]{
-  --ink:#e7e4f2; --muted:#a8a3bd; --bg:#141320; --panel:#1c1a2a; --line:#2f2c40; --side:#181626;
+  --ink:#F8F5EF; --muted:#AAB8C4; --bg:#061827; --panel:#0D2133; --line:#1E3448; --side:#0A1B2B;
   --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.35);
   --shadow-3d:0 2px 6px rgba(0,0,0,.5),0 18px 40px rgba(0,0,0,.45);
 }
@@ -25,14 +27,15 @@ body{
 .sidebar{background:var(--side); border-inline-start:1px solid var(--line); display:flex; flex-direction:column; padding:16px 12px}
 .brand{font-size:20px; padding:6px 8px 14px; display:flex; align-items:center; gap:8px}
 .brand .logo{font-size:22px}
-.os-tag{font-size:11px; font-weight:700; color:#fff; background:var(--grad); padding:2px 8px; border-radius:999px; letter-spacing:.5px}
+/* النص على التدرّج (coral→amber) غامق دايمًا: الأبيض على amber كنتراسته ضعيف */
+.os-tag{font-size:11px; font-weight:700; color:var(--midnight); background:var(--grad); padding:2px 8px; border-radius:999px; letter-spacing:.5px}
 
 /* شريط حالة النظام */
 .statusbar{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:16px; font-size:12.5px; color:var(--muted)}
 .statusbar .pill{background:var(--panel); border:1px solid var(--line); border-radius:999px; padding:4px 12px; display:inline-flex; gap:6px; align-items:center}
 .statusbar .pill b{color:var(--ink)}
-.statusbar .dot{width:8px;height:8px;border-radius:50%;background:#3fbf6a}
-.statusbar .dot.off{background:#d9534f}
+.statusbar .dot{width:8px;height:8px;border-radius:50%;background:var(--teal)}
+.statusbar .dot.off{background:var(--coral)}
 
 /* بطاقات الوحدات (Skills/Tools) */
 .mod-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:12px}
@@ -40,14 +43,14 @@ body{
 .mod .mod-top{display:flex; align-items:center; gap:8px; font-weight:700; margin-bottom:6px}
 .mod .mod-ico{font-size:20px}
 .mod p{margin:0; color:var(--muted); font-size:13.5px}
-.mod .tag{display:inline-block; margin-top:8px; font-size:12px; background:var(--side); color:var(--rose); padding:2px 10px; border-radius:999px}
+.mod .tag{display:inline-block; margin-top:8px; font-size:12px; background:var(--side); color:var(--coral); padding:2px 10px; border-radius:999px}
 nav{display:flex; flex-direction:column; gap:4px}
 .nav-item{
   text-align:start; background:transparent; border:none; color:var(--ink);
   padding:10px 12px; border-radius:10px; cursor:pointer; font-size:15px; font-family:inherit;
 }
 .nav-item:hover{background:var(--line)}
-.nav-item.active{background:var(--grad); color:#fff; font-weight:700}
+.nav-item.active{background:var(--grad); color:var(--midnight); font-weight:700}
 .side-foot{margin-top:auto; display:flex; flex-direction:column; gap:8px}
 .who-badge{font-size:13px; color:var(--muted); padding:0 8px; min-height:18px}
 
@@ -56,12 +59,12 @@ nav{display:flex; flex-direction:column; gap:4px}
 .view{max-width:900px; margin:0 auto}
 .hidden{display:none !important}
 h1{font-size:22px; margin:0 0 4px}
-h2{font-size:17px; margin:22px 0 8px; color:var(--rose)}
+h2{font-size:17px; margin:22px 0 8px; color:var(--coral)}
 .sub{color:var(--muted); margin:0 0 18px; font-size:14px}
 
-.banner{background:var(--grad); color:#fff; border-radius:16px; padding:18px 20px; margin-bottom:18px}
-.banner h1{color:#fff}
-.banner p{margin:2px 0 0; opacity:.92}
+.banner{background:var(--grad); color:var(--midnight); border-radius:16px; padding:18px 20px; margin-bottom:18px}
+.banner h1{color:var(--midnight)}
+.banner p{margin:2px 0 0; opacity:.85}
 
 .card{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:16px; box-shadow:var(--shadow); margin-bottom:14px}
 .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
@@ -70,13 +73,13 @@ h2{font-size:17px; margin:22px 0 8px; color:var(--rose)}
 .chips{display:flex; gap:8px; flex-wrap:wrap}
 
 button{font-family:inherit; font-size:14px; cursor:pointer}
-.btn{background:var(--grad); color:#fff; border:none; padding:10px 16px; border-radius:10px; font-weight:700}
+.btn{background:var(--grad); color:var(--midnight); border:none; padding:10px 16px; border-radius:10px; font-weight:700}
 .btn.block{width:100%}
 .btn:disabled{opacity:.6; cursor:default}
-.ghost{background:var(--panel); color:var(--rose); border:1px solid var(--line); padding:8px 14px; border-radius:10px}
+.ghost{background:var(--panel); color:var(--coral); border:1px solid var(--line); padding:8px 14px; border-radius:10px}
 .ghost.small{padding:6px 10px; font-size:13px}
-.chip{background:var(--panel); border:1px solid var(--line); color:var(--plum); padding:6px 12px; border-radius:999px; font-size:13px}
-.chip.sel{background:var(--grad); color:#fff; border-color:transparent}
+.chip{background:var(--panel); border:1px solid var(--line); color:var(--teal); padding:6px 12px; border-radius:999px; font-size:13px}
+.chip.sel{background:var(--grad); color:var(--midnight); border-color:transparent}
 .chip.person{color:var(--ink)}
 
 input[type=text], input[type=password], textarea, select{
@@ -88,7 +91,7 @@ label.field{display:block; margin-bottom:10px}
 label.field span{display:block; font-size:13px; color:var(--muted); margin-bottom:4px}
 
 .suggestion{border:1px solid var(--line); border-radius:14px; padding:14px; margin-bottom:12px; background:var(--panel)}
-.suggestion .theme{display:inline-block; background:var(--side); color:var(--rose); font-size:12px; padding:3px 10px; border-radius:999px; margin-bottom:8px}
+.suggestion .theme{display:inline-block; background:var(--side); color:var(--coral); font-size:12px; padding:3px 10px; border-radius:999px; margin-bottom:8px}
 .suggestion .text{font-size:16px; margin-bottom:10px}
 
 .muted{color:var(--muted); font-size:13px}
@@ -99,11 +102,11 @@ label.field span{display:block; font-size:13px; color:var(--muted); margin-botto
 
 .toast{position:fixed; inset-inline:0; bottom:24px; margin:auto; width:max-content; max-width:80%;
   background:var(--ink); color:var(--bg); padding:10px 18px; border-radius:999px; box-shadow:var(--shadow)}
-.modal{position:fixed; inset:0; background:rgba(0,0,0,.4); display:flex; align-items:center; justify-content:center; padding:20px}
+.modal{position:fixed; inset:0; background:rgba(6,24,39,.45); display:flex; align-items:center; justify-content:center; padding:20px}
 .modal-card{background:var(--panel); color:var(--ink); border-radius:16px; padding:18px 20px; max-width:520px; width:100%; max-height:80vh; overflow:auto; box-shadow:var(--shadow)}
 .modal-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px}
 .modal-body{white-space:pre-wrap}
-.spin{display:inline-block; width:16px; height:16px; border:2px solid var(--line); border-top-color:var(--rose); border-radius:50%; animation:spin .8s linear infinite; vertical-align:middle}
+.spin{display:inline-block; width:16px; height:16px; border:2px solid var(--line); border-top-color:var(--coral); border-radius:50%; animation:spin .8s linear infinite; vertical-align:middle}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* عمق ثلاثي الأبعاد: طبقات ظل + رفعة ناعمة عند المرور */
@@ -112,7 +115,7 @@ label.field span{display:block; font-size:13px; color:var(--muted); margin-botto
 .card:hover,.mod:hover,.suggestion:hover{transform:translateY(-3px)}
 .depth{box-shadow:var(--shadow-3d)}
 .depth:hover{transform:translateY(-4px) rotateX(1.4deg); box-shadow:var(--shadow-3d)}
-.btn{transition:transform .12s ease, filter .2s ease; box-shadow:0 6px 16px rgba(120,110,210,.20)}
+.btn{transition:transform .12s ease, filter .2s ease; box-shadow:0 6px 16px rgba(255,110,114,.25)}
 .btn:hover{filter:brightness(1.04)}
 .btn:active{transform:translateY(1px) scale(.99)}
 .mod:hover{box-shadow:var(--shadow-3d)}
