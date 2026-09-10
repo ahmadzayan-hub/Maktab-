@@ -1,0 +1,47 @@
+name: Wisal web checks
+
+# فحص موقع wisal-web الثابت (بدون build): صحة JSON (manifest / vercel.json)،
+# صحة XML (sitemap)، وإن كل صفحة HTML متكوّنة صح (parser بدون أخطاء).
+# بيتشغّل مع أي تعديل في المجلد.
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - claude/telegram-ai-assistant-bot-8vqsfg
+      - main
+    paths:
+      - "wisal-web/**"
+      - ".github/workflows/wisal-web.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: wisal-web
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: JSON + XML validity
+        run: |
+          python3 - <<'EOF'
+          import json, xml.etree.ElementTree as ET
+          for f in ("manifest.webmanifest", "vercel.json"):
+              json.load(open(f, encoding="utf-8")); print("ok", f)
+          ET.parse("sitemap.xml"); print("ok sitemap.xml")
+          EOF
+
+      - name: HTML well-formedness
+        run: |
+          python3 - <<'EOF'
+          import glob
+          from html.parser import HTMLParser
+          class Strict(HTMLParser):
+              def error(self, msg): raise SystemExit(msg)
+          for f in sorted(glob.glob("*.html")):
+              Strict().feed(open(f, encoding="utf-8").read()); print("ok", f)
+          EOF
