@@ -22,6 +22,18 @@ body{
   font-size:15px; line-height:1.7; overflow:hidden;
 }
 .app{display:grid; grid-template-columns:230px 1fr; height:100vh}
+/* لابتوبات ضيّقة (13" بدقّة 1366 أو نافذة نص الشاشة): شريط أنحف عشان
+   المحتوى ياخد مساحة أكبر. */
+@media (max-width:1100px){ .app{grid-template-columns:184px 1fr} }
+
+/* تحديد لوحة المفاتيح لازم يبان — التنقّل بالكيبورد أساسي على الديسكتوب. */
+:focus-visible{outline:2px solid var(--coral); outline-offset:2px; border-radius:8px}
+
+/* شريط تمرير رفيع بألوان الثيم بدل الافتراضي العريض. */
+*{scrollbar-width:thin; scrollbar-color:var(--line) transparent}
+::-webkit-scrollbar{width:10px; height:10px}
+::-webkit-scrollbar-thumb{background:var(--line); border-radius:999px; border:3px solid transparent; background-clip:content-box}
+::-webkit-scrollbar-thumb:hover{background:var(--mist); background-clip:content-box}
 
 /* الشريط الجانبي */
 .sidebar{background:var(--side); border-inline-start:1px solid var(--line); display:flex; flex-direction:column; padding:16px 12px}
@@ -30,8 +42,10 @@ body{
 /* النص على التدرّج (coral→amber) غامق دايمًا: الأبيض على amber كنتراسته ضعيف */
 .os-tag{font-size:11px; font-weight:700; color:var(--midnight); background:var(--grad); padding:2px 8px; border-radius:999px; letter-spacing:.5px}
 
-/* شريط حالة النظام */
-.statusbar{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:16px; font-size:12.5px; color:var(--muted)}
+/* شريط حالة النظام — ثابت فوق مع التمرير عشان الحالة تفضل قدّام عينك. */
+.statusbar{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:16px; font-size:12.5px; color:var(--muted);
+  position:sticky; top:0; z-index:5; padding:10px 0; margin-top:-20px;
+  background:linear-gradient(var(--bg) 78%, transparent)}
 .statusbar .pill{background:var(--panel); border:1px solid var(--line); border-radius:999px; padding:4px 12px; display:inline-flex; gap:6px; align-items:center}
 .statusbar .pill b{color:var(--ink)}
 .statusbar .dot{width:8px;height:8px;border-radius:50%;background:var(--teal)}
@@ -47,17 +61,56 @@ body{
 nav{display:flex; flex-direction:column; gap:4px}
 .nav-item{
   text-align:start; background:transparent; border:none; color:var(--ink);
-  padding:10px 12px; border-radius:10px; cursor:pointer; font-size:15px; font-family:inherit;
+  padding:9px 12px; border-radius:10px; cursor:pointer; font-size:14.5px; font-family:inherit;
+  display:flex; align-items:center; justify-content:space-between; gap:8px;
 }
 .nav-item:hover{background:var(--line)}
 .nav-item.active{background:var(--grad); color:var(--midnight); font-weight:700}
+/* رقم الاختصار (Ctrl+1..7) جنب كل عنصر — بيعلّم المستخدم الاختصارات من غير
+   ما يقرأ دليل. بيختفي على الشرائط الضيّقة. */
+.nav-item .k{font-size:11px; opacity:.55; font-variant-numeric:tabular-nums}
+.nav-item.active .k{opacity:.7}
+@media (max-width:1100px){ .nav-item .k{display:none} }
+
+kbd{
+  font:600 11.5px/1 "Segoe UI",system-ui,monospace; color:var(--muted);
+  background:var(--panel); border:1px solid var(--line); border-bottom-width:2px;
+  border-radius:6px; padding:3px 6px; white-space:nowrap;
+  /* الصفحة RTL، والاختصارات لاتينية — من غير عزل الاتجاه ده "Ctrl + ," بيتقلب
+     ويتعرض ", + Ctrl". */
+  direction:ltr; unicode-bidi:isolate; display:inline-block;
+}
 .side-foot{margin-top:auto; display:flex; flex-direction:column; gap:8px}
 .who-badge{font-size:13px; color:var(--muted); padding:0 8px; min-height:18px}
 
 /* المحتوى */
-.content{overflow-y:auto; padding:24px 30px}
-.view{max-width:900px; margin:0 auto}
+.content{overflow-y:auto; padding:20px 28px 28px}
+/* كان max-width:900px ثابت — على شاشة 1920 ده كان بيسيب ~47% من العرض فاضي.
+   دلوقتي العرض بيكبر مع النافذة لحد 1400px (أوسع من كده سطور القراءة بتبقى
+   طويلة ومتعبة)، والتخطيطات اللي تحت بتقسّم العرض لعمودين. */
+.view{max-width:1400px; margin:0 auto}
 .hidden{display:none !important}
+
+/* مساحة شغل بعمودين: الإدخال جنب المخرجات بدل ما يبقوا فوق بعض.
+   بتتفعّل من 1180px وفوق — تحت كده عمود واحد زي ما هو (لابتوب صغير/نافذة نص
+   الشاشة). minmax(0,…) عشان النص الطويل ما يمدّش العمود. */
+.split{display:grid; gap:18px; align-items:start}
+@media (min-width:1180px){
+  .split{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr)}
+  .split.wide-main{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)}
+  /* العمود التاني بيفضل ظاهر مع التمرير — المخرجات مايروحوش فوق وانت بتكتب. */
+  .split > .sticky-col{position:sticky; top:8px}
+}
+/* على الشاشات العريضة جدًا القوائم بتبقى شبكة بدل عمود واحد طويل. */
+@media (min-width:1500px){
+  .grid-list{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px}
+  .grid-list > *{margin-bottom:0}
+}
+
+/* حالة فاضية للعمود الجانبي — المساحة تبان مقصودة مش منسية. */
+.empty-pane{border:1px dashed var(--line); border-radius:14px; padding:26px 20px; text-align:center; color:var(--muted)}
+.empty-pane .big{font-size:30px; display:block; margin-bottom:8px}
+.empty-pane kbd{margin:0 2px}
 h1{font-size:22px; margin:0 0 4px}
 h2{font-size:17px; margin:22px 0 8px; color:var(--coral)}
 .sub{color:var(--muted); margin:0 0 18px; font-size:14px}
@@ -121,6 +174,14 @@ label.field span{display:block; font-size:13px; color:var(--muted); margin-botto
 .mod:hover{box-shadow:var(--shadow-3d)}
 
 @media (prefers-reduced-motion: reduce){ .card,.mod,.suggestion{transition:none} }
+
+/* قايمة الاختصارات / اختيار سريع للشخص */
+.sc-list{display:flex; flex-direction:column; gap:6px}
+.sc-row{display:flex; align-items:center; justify-content:space-between; gap:14px;
+  padding:9px 12px; border:1px solid var(--line); border-radius:10px; background:var(--panel);
+  color:var(--ink); font-family:inherit; font-size:14px; text-align:start; width:100%}
+button.sc-row{cursor:pointer}
+button.sc-row:hover{border-color:var(--coral)}
 
 /* رسائل الإرسال الجماعي */
 textarea.bc-msg{width:100%; min-height:70px; font-size:15px}

@@ -439,13 +439,23 @@ function renderHome() {
   const b3 = el('<button class="ghost">🌙 مسائي</button>'); b3.onclick = () => doGenerate('evening');
   btns.append(b1, b2, b3);
   gen.appendChild(btns);
-  host.appendChild(gen);
+
+  // تخطيط الديسكتوب: المُنشئ في عمود والمخرجات في عمود جنبه — كده بتشوف
+  // الاقتراح وانت لسه شايف السياق اللي كتبته، من غير تمرير.
+  const ws = el('<div class="split wide-main"></div>');
+  const main = el('<div></div>');
+  const side = el('<div class="sticky-col"></div>');
+  main.appendChild(gen);
+  const out = el('<div id="sugOut"></div>');
+  side.appendChild(out);
+  ws.append(main, side);
+  host.appendChild(ws);
   if ($('#ctx')) $('#ctx').value = renderHome._ctx || '';
 
-  // الاقتراحات
-  const out = el('<div id="sugOut"></div>');
-  host.appendChild(out);
   if (currentSuggestions) renderSuggestions();
+  else out.appendChild(el(
+    `<div class="empty-pane"><span class="big">✨</span>الاقتراحات هتظهر هنا.<br>
+     <span class="muted">اضغط <kbd>Ctrl + Enter</kbd> في أي وقت</span></div>`));
   updateWhoBadge();
 }
 
@@ -567,7 +577,14 @@ function renderPeople() {
   actions.appendChild(saveBtn);
   if (editingId) { const cancel = el('<button class="ghost">إلغاء</button>'); cancel.onclick = () => { editingId = null; formState = defForm(); renderPeople(); }; actions.appendChild(cancel); }
   f.appendChild(actions);
-  host.appendChild(f);
+  // الفورمة في عمود والقايمة في عمود: قبل كده القايمة كانت تحت الفورمة الطويلة،
+  // فمكنتش تشوف أشخاصك وانت بتضيف/بتعدّل غير بالتمرير.
+  const pws = el('<div class="split"></div>');
+  const pMain = el('<div></div>');
+  const pSide = el('<div></div>');
+  pMain.appendChild(f);
+  pws.append(pMain, pSide);
+  host.appendChild(pws);
 
   // شيبس العلاقة واللهجة
   META.relations.forEach((rel) => {
@@ -612,8 +629,8 @@ function renderPeople() {
   };
 
   // القائمة
-  host.appendChild(el('<h2>أشخاصك</h2>'));
-  if (!PEOPLE.length) host.appendChild(el('<p class="muted">لسه مفيش حد. ضيف أول شخص فوق.</p>'));
+  pSide.appendChild(el(`<h2 style="margin-top:0">أشخاصك <span class="muted" style="font-size:13px">(${PEOPLE.length})</span></h2>`));
+  if (!PEOPLE.length) pSide.appendChild(el('<div class="empty-pane"><span class="big">🧠</span>لسه مفيش حد.<br><span class="muted">ضيف أول شخص من الفورمة</span></div>'));
   PEOPLE.forEach((p) => {
     const sel = p.id === S.selectedRecipientId;
     const item = el(`<div class="list-item"><div class="person-card"><div class="name">${sel ? '✅ ' : ''}${relEmoji(p.relation)} ${esc(whoName(p))} · ${esc(relLabel(p.relation))}</div><div class="row tight"></div></div></div>`);
@@ -622,7 +639,7 @@ function renderPeople() {
     const ed = el('<button class="ghost small">تعديل</button>'); ed.onclick = () => { editingId = p.id; formState = { name: p.name || '', relation: p.relation, number: p.number || '', notes: p.notes || '', occText: (p.occasions || []).map((o) => o.label + '=' + o.date).join('\n'), tone: p.tone || '', dialect: p.dialect || 'egyptian', language: p.language || 'auto' }; renderPeople(); };
     const del = el('<button class="ghost small">حذف</button>'); del.onclick = async () => { const list = PEOPLE.filter((x) => x.id !== p.id); PEOPLE = await call('people:set', list); if (S.selectedRecipientId === p.id) S = await call('settings:set', { selectedRecipientId: (PEOPLE[0] && PEOPLE[0].id) || '' }); updateWhoBadge(); renderPeople(); };
     acts.append(ch, ed, del);
-    host.appendChild(item);
+    pSide.appendChild(item);
   });
 }
 function defForm() { return { name: '', relation: (META.relations[0] || {}).id || 'partner_wife', number: '', notes: '', occText: '', tone: '', dialect: 'egyptian', language: 'auto' }; }
@@ -716,6 +733,83 @@ function renderOnboard() {
   $('#view-onboard').classList.remove('hidden');
 }
 
+// ---------- اختصارات الكيبورد ----------
+// التطبيق كان ماوس-فقط بالكامل. دي أقل حاجة متوقّعة في تطبيق ديسكتوب:
+// تنقّل بين الأقسام، توليد، وقفل النوافذ المنبثقة — من غير ما تسيب الكيبورد.
+const NAV_ORDER = ['home', 'skills', 'tools', 'broadcast', 'people', 'history', 'settings'];
+const SHORTCUTS = [
+  ['Ctrl + 1…7', 'تنقّل بين الأقسام'],
+  ['Ctrl + Enter', 'اقتراح فوري (في الرئيسية)'],
+  ['Ctrl + K', 'بدّل الشخص اللي بتكتب له'],
+  ['Ctrl + ,', 'الإعدادات'],
+  ['Ctrl + D', 'بدّل الثيم فاتح/غامق'],
+  ['Esc', 'اقفل النافذة المنبثقة'],
+  ['?', 'اعرض الاختصارات دي'],
+];
+
+function modalOpen() { return !$('#modal').classList.contains('hidden'); }
+function closeModal() { $('#modal').classList.add('hidden'); }
+function openModal(title, html) {
+  $('#modalTitle').textContent = title;
+  $('#modalBody').innerHTML = html;
+  $('#modal').classList.remove('hidden');
+}
+function showShortcuts() {
+  openModal('⌨️ اختصارات الكيبورد',
+    '<div class="sc-list">' +
+    SHORTCUTS.map(([k, d]) => `<div class="sc-row"><span>${esc(d)}</span><kbd>${esc(k)}</kbd></div>`).join('') +
+    '</div>');
+}
+
+// بدّل الشخص بسرعة: قايمة مختصرة بأرقام 1..9.
+function quickSwitchRecipient() {
+  if (!PEOPLE.length) { toast('ضيف شخص في Brain الأول'); return; }
+  openModal('👥 بتكتب لمين؟',
+    '<div class="sc-list">' + PEOPLE.slice(0, 9).map((p, i) =>
+      `<button class="sc-row pick-person" data-id="${esc(p.id)}"><span>${relEmoji(p.relation)} ${esc(whoName(p))}</span><kbd>${i + 1}</kbd></button>`
+    ).join('') + '</div>');
+  $('#modalBody').querySelectorAll('.pick-person').forEach((b) => {
+    b.onclick = async () => {
+      S = await call('settings:set', { selectedRecipientId: b.dataset.id });
+      currentSuggestions = null; closeModal(); updateWhoBadge(); show('home');
+    };
+  });
+}
+
+function isTypingTarget(t) {
+  return t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable);
+}
+
+function installShortcuts() {
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { if (modalOpen()) { closeModal(); e.preventDefault(); } return; }
+
+    // اختيار رقم جوّه نافذة اختيار الشخص.
+    if (modalOpen() && /^[1-9]$/.test(e.key) && !isTypingTarget(e.target)) {
+      const btns = $('#modalBody').querySelectorAll('.pick-person');
+      const b = btns[Number(e.key) - 1];
+      if (b) { b.click(); e.preventDefault(); return; }
+    }
+
+    // "؟" لعرض الاختصارات — بس مش وانت بتكتب في حقل.
+    if ((e.key === '?' || e.key === '؟') && !isTypingTarget(e.target)) {
+      showShortcuts(); e.preventDefault(); return;
+    }
+
+    if (!(e.ctrlKey || e.metaKey)) return;
+
+    // Ctrl+1..7 → الأقسام. (ما بتتعارضش مع الكتابة لأن Ctrl مضغوط.)
+    if (/^[1-7]$/.test(e.key)) { show(NAV_ORDER[Number(e.key) - 1]); e.preventDefault(); return; }
+    if (e.key === 'k' || e.key === 'K') { quickSwitchRecipient(); e.preventDefault(); return; }
+    if (e.key === ',') { show('settings'); e.preventDefault(); return; }
+    if (e.key === 'd' || e.key === 'D') { $('#themeBtn').click(); e.preventDefault(); return; }
+    // Ctrl+Enter: توليد — شغّال حتى وانت واقف في خانة السياق.
+    if (e.key === 'Enter' && !$('#view-home').classList.contains('hidden')) {
+      doGenerate('manual'); e.preventDefault();
+    }
+  });
+}
+
 // ---------- تشغيل ----------
 async function boot() {
   S = await call('settings:get');
@@ -727,7 +821,11 @@ async function boot() {
   updateWhoBadge();
   document.querySelectorAll('.nav-item').forEach((b) => (b.onclick = () => show(b.dataset.view)));
   $('#themeBtn').onclick = async () => { S = await call('settings:set', { theme: S.theme === 'dark' ? 'light' : 'dark' }); applyTheme(); };
-  $('#modalClose').onclick = () => $('#modal').classList.add('hidden');
+  $('#modalClose').onclick = () => closeModal();
+  // ضغطة بره الكارت بتقفل — سلوك متوقّع في الديسكتوب.
+  $('#modal').onclick = (e) => { if (e.target === $('#modal')) closeModal(); };
+  $('#scBtn').onclick = () => showShortcuts();
+  installShortcuts();
   updateStatus();
   if (!S.onboarded) renderOnboard(); else show('home');
 }
