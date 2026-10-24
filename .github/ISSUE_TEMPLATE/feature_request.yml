@@ -1,0 +1,25 @@
+name: ✨ اقتراح ميزة
+description: فكرة تخلّي وصال أحسن
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: المشكلة اللي بتحلّها
+      description: إيه الموقف الحقيقي اللي خلاك تفكر في ده؟
+    validations: { required: true }
+  - type: textarea
+    id: idea
+    attributes:
+      label: الفكرة
+    validations: { required: true }
+  - type: checkboxes
+    id: rules
+    attributes:
+      label: توافق مع قواعد المنتج
+      description: "الاقتراحات اللي بتكسر دول مش هتتنفّذ (شوف CONTRIBUTING.md)."
+      options:
+        - label: الفكرة **مش** بتخلّي التطبيق يبعت رسائل تلقائياً
+          required: true
+        - label: الفكرة **مش** بتتطلّب تخزين بيانات المستخدم على سيرفر
+          required: true

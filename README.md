@@ -1,119 +1,166 @@
-# Lahza
+<div align="center">
 
-A premium, **UAE-ready bilingual (EN/AR) SaaS commerce platform** for
-personalised coffee gifts, live event coffee stations, and corporate
-appreciation campaigns, operated by **Beyond Connect General Trading L.L.C**.
+<img src="docs/assets/hero.png" alt="وصال Wisal — مساحة خاصة لأقرب ناس" width="100%">
 
-This is the customer-facing storefront + a demo operations console: a Vite +
-React app at the **repository root**, which Vercel and Netlify build directly
-with no subfolder configuration. It is also an installable **PWA** (add to home
-screen on Android/iOS).
+<h1>وصال · Wisal</h1>
 
-> This repository also hosts a second, independent product line (**Wisal**) in
-> sibling folders. The root build is Lahza only. See **[PROJECTS.md](./PROJECTS.md)**
-> for the full project map and how to deploy or split each project separately.
+**مساحة خاصة لأقرب ناس.** بيساعدك تلاقي الكلمة المناسبة — وانت اللي بتبعتها.
 
-> Mobile-first · conversion-focused · Arabic RTL-quality · UAE-compliance-ready.
+[![Android](https://img.shields.io/badge/Android-APK-FF6E72?style=flat-square&logo=android&logoColor=white)](https://github.com/ahmadzayan-hub/Maktab-/releases/download/android-latest/wisal.apk)
+[![Windows](https://img.shields.io/badge/Windows-Installer-061827?style=flat-square&logo=windows&logoColor=white)](https://github.com/ahmadzayan-hub/Maktab-/releases/download/windows-latest/Wisal-Setup.exe)
+[![Web](https://img.shields.io/badge/Web-Studio-35B8A6?style=flat-square&logo=react&logoColor=white)](wisal-studio/)
+[![Android CI](https://github.com/ahmadzayan-hub/Maktab-/actions/workflows/android.yml/badge.svg?branch=claude%2Ftelegram-ai-assistant-bot-8vqsfg)](https://github.com/ahmadzayan-hub/Maktab-/actions/workflows/android.yml)
+[![Windows CI](https://github.com/ahmadzayan-hub/Maktab-/actions/workflows/desktop.yml/badge.svg?branch=claude%2Ftelegram-ai-assistant-bot-8vqsfg)](https://github.com/ahmadzayan-hub/Maktab-/actions/workflows/desktop.yml)
 
-## Stack
+[التحميل](#-التحميل) · [جرّبها في المتصفح](#-جرّبها-في-المتصفح) · [إزاي بتشتغل](#️-إزاي-بتشتغل) · [الخصوصية](#-الخصوصية-بالظبط) · [للمطوّرين](#-للمطوّرين)
 
-- **Vite + React 18 + TypeScript**
-- **Tailwind CSS** with logical properties (`ps`/`pe`/`ms`/`me`) so layouts
-  mirror automatically in Arabic RTL
-- **react-router-dom** with route-level code splitting
-- Lightweight custom **i18n** (`src/i18n`) — EN source of truth, AR mirrored and
-  type-enforced to the same shape; switches `document.dir` instantly
-- Zero heavy runtime deps (no chart/animation/PDF libraries) to protect
-  Lighthouse / LCP / INP / CLS
-
-## Quick start
-
-```bash
-# the Lahza app is the repository root — run these from the repo root
-npm install
-npm run dev        # http://localhost:5173
-npm run build      # tsc --noEmit + vite build
-npm run preview
-```
-
-## What's inside
-
-| Area | Where |
-| --- | --- |
-| Home + 3 above-the-fold paths (Personal · Corporate · Bulk) | `src/pages/Home.tsx`, `components/CustomerPaths.tsx` |
-| Mobile header with hamburger | `components/Header.tsx` |
-| Non-overlapping WhatsApp FAB | `components/WhatsAppFab.tsx` (icon-only on mobile; `<main>` reserves bottom padding) |
-| Customisation flow (7 steps) | `src/pages/Customize.tsx`, `pages/customize/*` |
-| Live cup/sleeve/box/card preview | `components/ProductPreview.tsx` (SVG, no image weight) |
-| Corporate flow + **PDF quotation** | `src/pages/Corporate.tsx` (print-to-PDF), `lib/quotation.ts` |
-| Operations console | `src/pages/admin/Admin.tsx` at `/console` |
-| Bilingual dictionaries | `src/i18n/en.ts`, `src/i18n/ar.ts` |
-| Pricing / gallery / delivery / legal | `src/pages/*`, `lib/catalog.ts` |
-| Seller identity + VAT + compliance config | `src/lib/brand.ts` |
-
-### Customisation flow steps
-
-Upload → **image-quality validation** → live preview (cup/sleeve/box/card) →
-gift message (AR/EN) → package → delivery Emirate & date/time → review →
-pay online **or** request a WhatsApp payment link. Personalised-goods
-non-returnable notice + PDPL photo consent are enforced in-flow.
-
-### AI features (`src/lib/ai.ts`)
-
-All behind small, swappable interfaces. They run offline/deterministically out
-of the box; set `VITE_AI_ENDPOINT` to route generation + image moderation to a
-real provider (OpenAI / Anthropic / Gemini / Firefly).
-
-- AI image cleanup + auto-crop for cup/box (canvas, client-side)
-- Arabic name spelling assistant (curated map + flagged phonetic fallback)
-- Gift-message generator (tone × language)
-- Corporate proposal + event-package recommender
-- Image moderation seam before checkout
-
-## UAE compliance readiness
-
-Built to a UAE e-commerce compliance brief (Consumer Protection & E-Commerce
-Law, VAT/FTA invoicing, and PDPL for photo uploads). See
-[`docs/THREAT_MODEL.md`](docs/THREAT_MODEL.md) for the security view:
-
-- **Seller identity** (legal name, licence authority, licence no., TRN, address)
-  shown in footer, contact, checkout and on the quotation — edit in
-  `src/lib/brand.ts` (`TODO` values must be confirmed before launch).
-- **VAT-inclusive** consumer pricing; **VAT-exclusive** B2B with a full tax
-  invoice / quotation; 5% VAT wording throughout.
-- **Personalised-goods non-returnable** notice at checkout.
-- **PDPL**: explicit photo-upload consent, stated 30-day auto-deletion of source
-  photos, and a bilingual Privacy Policy covering retention, sharing,
-  cross-border transfers, children and AI processing.
-- Bilingual **Terms**, **Refund & Cancellation** and **Delivery** policies.
-
-> The seller licence number and TRN are placeholders — confirm and set them in
-> `src/lib/brand.ts`. Payment, WhatsApp Business API and real AI/moderation keys
-> belong on a server, never in the client bundle.
-
-## Performance notes
-
-- Route-level `lazy()` splitting; home ships a small bundle.
-- Fonts preconnected with `display=swap`; SVG/gradient mockups instead of
-  hero images (no CLS, no large LCP image).
-- `prefers-reduced-motion` respected; all interactive controls are keyboard-
-  and screen-reader-labelled; skip-to-content link included.
-
-## Recommended production wiring
-
-- Payments: **Telr** or **PayTabs** + **Tabby** + **Tamara** + Apple/Google Pay
-  + COD + corporate payment links.
-- Hosting/data residency: UAE cloud region for photos & invoice data; per-object
-  lifecycle rules to auto-purge source images after fulfilment.
-- WhatsApp Business API via a BSP for order/utility/OTP messages.
+</div>
 
 ---
 
-## Also in this repository
+## إيه ده؟
 
-| Project | Path | What it is |
+تطبيق بيساعدك تفضل قريّب من أهلك وأصحابك. مش شبكة اجتماعية ولا مساعد بيتكلم بالنيابة عنك —
+فكرته بسيطة: ساعات بتكون عايز تبعت كلمة حلوة لحد بتحبه ومش لاقي الصياغة، فـ**وصال بيقترح، وانت
+بتعدّل وتبعت بإيدك**.
+
+> [!IMPORTANT]
+> **مفيش إرسال تلقائي. خالص.** الذكاء الاصطناعي بيقترح الصياغة بس — الضغطة الأخيرة على "إرسال"
+> بإيدك إنت، في كل واجهة. دي قاعدة مفروضة في الكود نفسه، مش وعد في README.
+
+---
+
+## 📥 التحميل
+
+| المنصّة | الملف | الحجم | ملاحظات |
+| --- | --- | --- | --- |
+| 🤖 **أندرويد 8+** | [`wisal.apk`](https://github.com/ahmadzayan-hub/Maktab-/releases/download/android-latest/wisal.apk) | ~118 MB | أجهزة ARM64. أول تثبيت محتاج تسمح بـ"مصادر غير معروفة". |
+| 🪟 **ويندوز 10+** | [`Wisal-Setup.exe`](https://github.com/ahmadzayan-hub/Maktab-/releases/download/windows-latest/Wisal-Setup.exe) | ~112 MB | تثبيت بدون صلاحيات أدمن. فيه كمان [نسخة محمولة](https://github.com/ahmadzayan-hub/Maktab-/releases/download/windows-latest/Wisal-Portable.exe). |
+| 🌐 **ويب** | [`wisal-studio/`](wisal-studio/) | — | بيشتغل في المتصفح فوراً، من غير تثبيت. |
+
+> النسخ دي **مش موقّعة تجارياً** لسه. ويندوز هيطلّع تحذير SmartScreen أول مرة
+> (More info → Run anyway)، وده متوقّع. التفاصيل في [حالة المشروع](#-حالة-المشروع-بصراحة).
+
+---
+
+## 🌐 جرّبها في المتصفح
+
+`wisal-studio/` نسخة ويب تفاعلية (React + Vite) بتشتغل **محلياً بالكامل**: اختار الشخص والنيّة
+واللهجة، وخد رسالة جاهزة تنسخها أو تفتحها في واتساب.
+
+```bash
+cd wisal-studio
+npm install
+npm run dev          # http://localhost:5173
+```
+
+**ليه دي مهمة؟** مفيش مفتاح، مفيش حساب، ومفيش أي طلب شبكة — الصياغة بتتولّد من بنك جُمل محلي
+مكتوب بأربع لهجات (مصري · خليجي · شامي · فصحى) مع مطابقة صحيحة للمذكّر والمؤنث. يعني تقدر
+تجرّب المنتج فعلياً من غير ما تثبّت حاجة أو تسلّم بياناتك لأي حد.
+
+النشر على Vercel: Root Directory = `wisal-studio`، والباقي افتراضي (Vite preset).
+
+---
+
+## 🏗️ إزاي بتشتغل
+
+<div align="center">
+  <img src="docs/assets/architecture.png" alt="واجهات وصال وأين تعيش البيانات" width="100%">
+</div>
+
+---
+
+## 🔒 الخصوصية بالظبط
+
+بدل كلام عام، ده اللي بيحصل فعلاً:
+
+| البيانات | فين بتتخزّن؟ | بتخرج من الجهاز؟ |
 | --- | --- | --- |
-| **Beyond Style UAE landing page** | [`landing/`](landing/) | Bilingual (Arabic-first/EN) static landing page for the personalized-jewelry brand — WhatsApp + Google Form ordering, no build step. Deployed to GitHub Pages by [`deploy-landing.yml`](.github/workflows/deploy-landing.yml). See [`landing/README.md`](landing/README.md). |
-| Android wife assistant | `android-wife-assistant/` | Native Android app (CI builds via [`android.yml`](.github/workflows/android.yml)) |
-| Telegram wife assistant | `telegram-wife-assistant/` | Telegram bot companion |
-| Wisal web | `wisal-web/` | Web app |
+| أشخاصك، ملاحظاتك، مناسباتك | جهازك | ❌ |
+| تعلّم أسلوبك ورسايلك المحفوظة | جهازك | ❌ |
+| تأليف الرسائل في نسخة الويب | متصفحك | ❌ — صفر طلبات شبكة |
+| مفتاح Groq | مشفّر عبر Android Keystore (أندرويد) | يتبعت لـGroq كترويسة مصادقة |
+| سياق الرسالة وقت التوليد بالذكاء | — | ✅ يتبعت لـ**Groq** عشان يكتب الاقتراح |
+| رقم واتساب والرسالة | — | بيتفتحوا في واتساب، وانت بتدوس Send |
+
+**مفيش سيرفر لوصال بيجمع بياناتك.** الباك-إندات الموجودة في الريبو (`wisal-cloud-api`,
+`wisal-direct-relay`) **اختيارية وبتنشرها إنت بنفسك** لو عايز وضع الأعمال — مش خدمة بنشغّلها
+إحنا.
+
+سياسة الخصوصية الكاملة: [`wisal-web/privacy.html`](wisal-web/privacy.html).
+
+---
+
+## 📦 محتويات الريبو
+
+ده **monorepo** فيه أكتر من منتج. كل مجلد مستقل وله بناء ونشر خاص بيه:
+
+### وصال (Wisal)
+| المجلد | إيه ده | التقنية |
+| --- | --- | --- |
+| [`android-wife-assistant/`](android-wife-assistant/) | تطبيق أندرويد (المنتج الأساسي) | Kotlin · Jetpack Compose |
+| [`wisal-desktop/`](wisal-desktop/) | تطبيق ويندوز | Electron |
+| [`wisal-studio/`](wisal-studio/) | نسخة الويب التفاعلية | React · Vite |
+| [`wisal-web/`](wisal-web/) | صفحة الهبوط وسياسة الخصوصية | HTML/CSS ثابت |
+| [`telegram-wife-assistant/`](telegram-wife-assistant/) | بوت تيليجرام (مساعد شخصي للمالك بس) | Node.js |
+| [`wisal-cloud-api/`](wisal-cloud-api/) | باك-إند اختياري لواتساب Business | Node · Vercel Functions |
+| [`wisal-direct-relay/`](wisal-direct-relay/) | ترحيل مغلّفات مشفّرة (طور التطوير) | Node · Vercel Functions |
+
+### مشاريع تانية في نفس الريبو
+| المجلد | إيه ده |
+| --- | --- |
+| [`src/`](src/) (الجذر) | **Lahza** — تطبيق ويب لهدايا القهوة (Vite · React · TS) |
+| [`landing/`](landing/) | **Beyond Style UAE** — صفحة هبوط لعلامة مجوهرات |
+| [`agent-os/`](agent-os/) · [`agentic-os/`](agentic-os/) | طبقات تنظيمية/حوكمة للعمل على الريبو |
+
+تفاصيل أوسع: [`PROJECTS.md`](PROJECTS.md).
+
+---
+
+## 🧪 للمطوّرين
+
+```bash
+# نسخة الويب
+cd wisal-studio && npm install && npm run dev && npm test
+
+# تطبيق ويندوز
+cd wisal-desktop && npm install && npm start && npm test
+
+# تطبيق أندرويد
+cd android-wife-assistant && ./gradlew testDebugUnitTest
+
+# البوت والباك-إندات
+cd telegram-wife-assistant && npm install && npm test
+cd wisal-cloud-api && npm run check && npm test
+cd wisal-direct-relay && npm run check && npm test
+```
+
+كل مشروع ليه workflow في [`.github/workflows/`](.github/workflows/) بيشتغل على تعديلات مجلده بس.
+
+---
+
+## 📋 حالة المشروع (بصراحة)
+
+شفافية أهم من تسويق. ده الوضع الحقيقي قبل أي نشر عام:
+
+| البند | الحالة |
+| --- | --- |
+| تطبيق أندرويد وويندوز | ✅ شغّالين، ببناء آلي على كل تعديل |
+| نسخة الويب | ✅ شغّالة محلياً بالكامل، 15 اختبار للمحرّك |
+| تشفير E2EE | ⚠️ **مش مُعلَن ومش مكتمل.** libsignal متكامل في الكود لكنه مش موصول بأي مسار رسائل، و`mayClaimE2ee = false`. مفيش أي ادعاء تشفير في الواجهة. |
+| توقيع التطبيقات | ⚠️ النسخ الحالية موقّعة بمفتاح تطوير — **لازم مفتاح رفع حقيقي قبل Google Play** |
+| الترخيص | ⚠️ **مفيش ملف ترخيص لسه.** `libsignal-android` مرخّص AGPL-3.0، وده بيفرض التزامات على التوزيع — قرار الترخيص لسه مفتوح |
+| `wisal-direct-relay` | ⚠️ تخزين في الذاكرة — **مش جاهز للإنتاج**، ومفيش ميزة شغّالة بتعتمد عليه |
+
+---
+
+## 🤝 المساهمة والأمان
+
+- إزاي تساهم: [`CONTRIBUTING.md`](CONTRIBUTING.md)
+- تبليغ ثغرة أمنية: [`SECURITY.md`](SECURITY.md) — **من فضلك متفتحش Issue عام بثغرة**
+
+---
+
+<div align="center">
+  <sub>اتعمل بـ💗 لأقرب ناس · <a href="wisal-web/privacy.html">الخصوصية</a> · <a href="PROJECTS.md">كل المشاريع</a></sub>
+</div>

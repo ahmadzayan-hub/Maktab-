@@ -1,0 +1,40 @@
+name: 🐞 بلاغ عن مشكلة
+description: حاجة مش شغّالة زي ما المفروض
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        شكراً للبلاغ 💗
+        **لو المشكلة أمنية، متفتحش Issue** — ابعت على ahmad.zayan@gmail.com (شوف SECURITY.md).
+  - type: dropdown
+    id: surface
+    attributes:
+      label: الواجهة
+      options: [أندرويد, ويندوز, الويب (Studio), بوت تيليجرام, باك-إند, مش متأكد]
+    validations: { required: true }
+  - type: textarea
+    id: what
+    attributes:
+      label: إيه اللي حصل؟
+      description: وصف المشكلة، وإيه اللي كنت متوقّعه بدل كده.
+    validations: { required: true }
+  - type: textarea
+    id: steps
+    attributes:
+      label: خطوات إعادة الإنتاج
+      placeholder: |
+        1. افتح ...
+        2. اضغط ...
+        3. المفروض يحصل ... بس اللي حصل ...
+    validations: { required: true }
+  - type: input
+    id: version
+    attributes:
+      label: النسخة / الجهاز
+      placeholder: "مثلاً: أندرويد 14، Samsung S23 — أو ويندوز 11"
+  - type: textarea
+    id: extra
+    attributes:
+      label: أي حاجة تانية
+      description: لقطات شاشة أو رسائل خطأ. **متحطش مفاتيح API ولا أرقام تليفون حقيقية.**

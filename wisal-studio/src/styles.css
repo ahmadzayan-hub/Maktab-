@@ -1,0 +1,119 @@
+/* وصال Studio — نفس توكنز العلامة في باقي المنتج:
+   Midnight / Coral / Amber / Teal / Porcelain / Mist. */
+:root{
+  --midnight:#061827; --coral:#FF6E72; --amber:#F2C56B; --teal:#35B8A6;
+  --porcelain:#F8F5EF; --mist:#AAB8C4;
+  --bg:var(--porcelain); --ink:var(--midnight); --muted:#5A6B7A;
+  --card:#FFFFFF; --line:#E5DFD3;
+  --grad:linear-gradient(135deg,var(--coral),var(--amber));
+  --shadow:0 1px 2px rgba(6,24,39,.05),0 10px 30px rgba(6,24,39,.07);
+  --r:16px;
+}
+:root[data-theme="dark"]{
+  --bg:#061827; --ink:#F8F5EF; --muted:#AAB8C4; --card:#0D2133; --line:#1E3448;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.35);
+}
+/* لو المستخدم لسه ما اختارش ثيم، نمشي مع تفضيل النظام. */
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#061827; --ink:#F8F5EF; --muted:#AAB8C4; --card:#0D2133; --line:#1E3448;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.35);
+  }
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Segoe UI",system-ui,-apple-system,"Noto Naskh Arabic",Tahoma,sans-serif;
+  font-size:16px; line-height:1.8;
+}
+.wrap{max-width:1180px; margin-inline:auto; padding:0 20px}
+a{color:var(--teal)}
+h1,h2{line-height:1.35}
+h1{font-size:clamp(26px,3.4vw,40px); margin:0 0 10px}
+h2{font-size:19px; margin:0 0 8px}
+.muted{color:var(--muted); font-size:14px}
+:focus-visible{outline:2px solid var(--coral); outline-offset:2px; border-radius:10px}
+
+/* الهيدر */
+.top{position:sticky; top:0; z-index:10; background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:blur(8px); border-bottom:1px solid var(--line)}
+.top-in{display:flex; align-items:center; justify-content:space-between; padding-block:12px}
+.brand{font-size:19px; display:flex; align-items:center; gap:8px}
+.tag{font-size:11px; font-weight:800; letter-spacing:.6px; color:var(--midnight);
+  background:var(--grad); padding:3px 9px; border-radius:999px}
+.top-actions{display:flex; gap:8px; align-items:center}
+
+.hero{padding:34px 0 20px; max-width:760px}
+.hero p{margin:0; color:var(--muted); font-size:17px}
+
+/* شبكة: عمودين على الشاشات الواسعة */
+.split{display:grid; gap:18px; align-items:start; margin-bottom:18px}
+@media (min-width:980px){ .split{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)} }
+.col{display:flex; flex-direction:column; gap:14px}
+
+.card{background:var(--card); border:1px solid var(--line); border-radius:var(--r);
+  padding:18px; box-shadow:var(--shadow); margin-bottom:18px}
+.card.soft{box-shadow:none}
+.field{display:block; margin-bottom:14px}
+.lbl{display:block; font-size:13.5px; color:var(--muted); margin-bottom:6px}
+.grid2{display:grid; gap:0 14px}
+@media (min-width:620px){ .grid2{grid-template-columns:1fr 1fr} }
+
+input[type=text], input:not([type]), textarea{
+  width:100%; background:var(--bg); color:var(--ink); border:1px solid var(--line);
+  border-radius:12px; padding:11px 13px; font:inherit; font-size:15px;
+}
+textarea{resize:vertical}
+.check{display:inline-flex; align-items:center; gap:8px; font-size:14px; color:var(--muted); margin-bottom:14px}
+
+.chips{display:flex; flex-wrap:wrap; gap:8px}
+.chip{background:var(--bg); border:1px solid var(--line); color:var(--ink);
+  padding:7px 13px; border-radius:999px; font:inherit; font-size:14px; cursor:pointer;
+  transition:border-color .15s, transform .12s}
+.chip:hover{border-color:var(--coral)}
+.chip:active{transform:scale(.97)}
+.chip.sel{background:var(--grad); color:var(--midnight); border-color:transparent; font-weight:700}
+
+.btn{display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  background:var(--grad); color:var(--midnight); border:none; border-radius:12px;
+  padding:12px 18px; font:inherit; font-weight:800; font-size:15px; cursor:pointer; text-decoration:none;
+  box-shadow:0 6px 16px rgba(255,110,114,.25); transition:filter .2s, transform .12s}
+.btn:hover{filter:brightness(1.05)}
+.btn:active{transform:translateY(1px)}
+.btn.block{width:100%}
+.ghost{background:var(--card); color:var(--ink); border:1px solid var(--line);
+  border-radius:12px; padding:10px 15px; font:inherit; font-size:14px; cursor:pointer; text-decoration:none;
+  display:inline-flex; align-items:center; gap:6px}
+.ghost:hover{border-color:var(--coral)}
+.ghost.small{padding:6px 11px; font-size:13px}
+.icon{background:none; border:none; color:var(--muted); font-size:17px; cursor:pointer; padding:2px 6px; line-height:1}
+.icon[aria-pressed="true"]{color:var(--amber)}
+.row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+.row.tight{gap:4px}
+.row > input{flex:1; min-width:120px}
+kbd{font:600 11px/1 ui-monospace,monospace; background:rgba(6,24,39,.12); color:inherit;
+  border-radius:6px; padding:3px 6px; direction:ltr; unicode-bidi:isolate}
+
+/* الاقتراحات */
+.sug{background:var(--card); border:1px solid var(--line); border-radius:var(--r); padding:16px; box-shadow:var(--shadow)}
+.sug-top{display:flex; justify-content:space-between; align-items:center; margin-bottom:8px}
+.theme{font-size:12px; background:var(--bg); border:1px solid var(--line); color:var(--coral);
+  padding:3px 11px; border-radius:999px}
+.sug-text{font-size:17.5px; margin:0 0 14px; line-height:1.85}
+.sug-actions{display:flex; gap:8px; flex-wrap:wrap}
+
+.favs{list-style:none; padding:0; margin:10px 0 0; display:flex; flex-direction:column; gap:8px}
+.favs li{display:flex; justify-content:space-between; gap:10px; align-items:flex-start;
+  background:var(--bg); border:1px solid var(--line); border-radius:12px; padding:9px 12px; font-size:14.5px}
+.occs{list-style:none; padding:0; margin:12px 0 0; display:flex; flex-direction:column; gap:8px}
+.occs li{display:flex; justify-content:space-between; gap:10px; align-items:center;
+  border:1px solid var(--line); border-radius:12px; padding:9px 12px; font-size:14.5px}
+
+.privacy ul{margin:8px 0 0; padding-inline-start:20px; color:var(--muted); font-size:14.5px}
+.privacy li{margin-bottom:6px}
+.privacy b{color:var(--ink)}
+
+.foot{padding:26px 20px 44px; text-align:center; color:var(--muted); font-size:14px}
+
+@media (prefers-reduced-motion: reduce){ *{transition:none !important} }

@@ -29,6 +29,7 @@ and a Telegram bot.
 | Path | Surface | Stack | Deploy target |
 | --- | --- | --- | --- |
 | `wisal-web/` | Landing + download page | Static HTML/CSS/JS (own `vercel.json`, `manifest`, `sitemap`, `robots`, `llms.txt`) | Vercel/Netlify as a **separate project** with Root Directory = `wisal-web` |
+| `wisal-studio/` | Interactive web app — composes messages entirely client-side (local phrase bank, 4 dialects, gendered agreement); no API key, no network calls | React + Vite | Vercel as a **separate project**, Root Directory = `wisal-studio` |
 | `android-wife-assistant/` | Android app | Kotlin + Gradle | Google Play / signed APK |
 | `wisal-desktop/` | Windows desktop app | Electron | GitHub Releases (`windows-latest` tag: `Wisal-Setup.exe` / `Wisal-Portable.exe`), own CI at `.github/workflows/desktop.yml` |
 | `telegram-wife-assistant/` | Telegram bot | Node.js (PM2 `ecosystem.config.js`) | Any always-on host (VPS/Render/Railway) via PM2 |
