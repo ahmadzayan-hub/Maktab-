@@ -1,8 +1,18 @@
 # Next.js 14 → 16 migration plan
 
-Closes the 5 remaining `npm audit` **high** advisories, all of which are patched
+Closes the remaining `npm audit` **high** advisories, all of which are patched
 only in the Next 16 line (`next` Server-Actions DoS, bundled `postcss` XSS, and
 the `eslint-config-next` / `@next/eslint-plugin-next` / `glob` toolchain).
+
+**Update (2026-11-01):** `next@14.2.35` has since picked up 3 **CRITICAL**
+unauthenticated-RCE advisories (GHSA-p293-qw3h-jr36, GHSA-2xp9-vwfh-vxw4,
+GHSA-2464-fhr4-w9xw). First patched versions are `next@15.5.28` or
+`next@16.4.1` — i.e. the fix requires this same migration (no 14.x patch
+exists). Until this migration lands, those 3 CRITICALs are accepted-risk and
+documented with justification in `scripts/audit-filter.mjs`, which the CI
+"Security audit (block new criticals)" step runs instead of a bare
+`npm audit --audit-level=critical`. This raises the urgency of this migration:
+treat it as a security fix, not just a lint/toolchain cleanup.
 
 > **Why this is a scheduled migration, not a quick fix:** the core change
 > (Next 15+ makes `cookies()` / `headers()` / route `params` **async**) touches

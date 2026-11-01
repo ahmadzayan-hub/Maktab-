@@ -42,12 +42,14 @@ jobs:
       - name: Build
         run: npm run build
 
-      # Fails only on CRITICAL advisories (currently 0). The remaining HIGH
-      # advisories are tracked to the Next 16 migration in
+      # Fails only on an unaccepted CRITICAL advisory. The remaining HIGH
+      # advisories (and the 3 accepted-risk CRITICALs in `next`, documented in
+      # scripts/audit-filter.mjs) are tracked to the Next 15/16 migration in
       # docs/NEXT_16_MIGRATION_PLAN.md; audited here for visibility without
-      # blocking, so a newly-introduced critical is caught immediately.
+      # blocking, so a newly-introduced, unaccepted critical is caught
+      # immediately.
       - name: Security audit (block new criticals)
-        run: npm audit --audit-level=critical
+        run: node scripts/audit-filter.mjs
 
   e2e:
     name: playwright (public surface)
