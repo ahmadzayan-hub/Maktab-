@@ -4,15 +4,31 @@ Closes the remaining `npm audit` **high** advisories, all of which are patched
 only in the Next 16 line (`next` Server-Actions DoS, bundled `postcss` XSS, and
 the `eslint-config-next` / `@next/eslint-plugin-next` / `glob` toolchain).
 
-**Update (2026-11-01):** `next@14.2.35` has since picked up 3 **CRITICAL**
-unauthenticated-RCE advisories (GHSA-p293-qw3h-jr36, GHSA-2xp9-vwfh-vxw4,
-GHSA-2464-fhr4-w9xw). First patched versions are `next@15.5.28` or
-`next@16.4.1` — i.e. the fix requires this same migration (no 14.x patch
-exists). Until this migration lands, those 3 CRITICALs are accepted-risk and
-documented with justification in `scripts/audit-filter.mjs`, which the CI
-"Security audit (block new criticals)" step runs instead of a bare
-`npm audit --audit-level=critical`. This raises the urgency of this migration:
-treat it as a security fix, not just a lint/toolchain cleanup.
+**Audit policy correction (2026-11-06):** `next@14.2.35` remains in the
+published affected ranges for three CRITICAL advisories. The audit gate now
+blocks **all** critical findings, including these IDs, and fails closed when
+npm does not produce a valid report. There are no accepted-risk exceptions.
+This tooling change does not patch Next.js or establish deployment exploitability.
+
+- [GHSA-p293-qw3h-jr36](https://github.com/advisories/GHSA-p293-qw3h-jr36):
+  Windows-hosted servers; first patched in 15.5.24 / 16.3.3.
+- [GHSA-2xp9-vwfh-vxw4](https://github.com/advisories/GHSA-2xp9-vwfh-vxw4):
+  affected AVIF optimization through sharp/libheif; first patched in
+  15.5.24 / 16.3.3.
+- [GHSA-2464-fhr4-w9xw](https://github.com/advisories/GHSA-2464-fhr4-w9xw):
+  image optimization on glibc Linux; first patched in 15.5.28 / 16.4.1.
+  The advisory also documents ensuring Next.js uses sharp >=0.35.5 as a
+  workaround. Runtime applicability and compatibility require verification;
+  the repository lockfile alone is not deployment evidence.
+
+15.5.28 / 16.4.1 covers all three listed advisories, not necessarily every
+current advisory. Recheck current supported releases before migration.
+A green audit is not proof of safe auth behavior or deployment security.
+
+Offline gate tests: `node --test scripts/audit-filter.test.mjs` (no npm audit,
+network, credentials, or installed dependencies). The gate itself runs
+`npm audit --json --audit-level=critical`; exits 0 for valid non-critical
+reports, 1 for critical findings, and 2 for untrustworthy audit evidence.
 
 > **Why this is a scheduled migration, not a quick fix:** the core change
 > (Next 15+ makes `cookies()` / `headers()` / route `params` **async**) touches
@@ -33,7 +49,12 @@ treat it as a security fix, not just a lint/toolchain cleanup.
 ## Prep already done (this branch)
 
 - ✅ Removed the unused, deprecated `@supabase/auth-helpers-nextjs` (a Next-16 incompatibility; 0 imports in `src`).
-- ✅ `next` bumped to the latest 14.2.x (14.2.35) — safe interim.
+- ✅ `next` bumped to the latest 14.2.x (14.2.35) — historical interim; now has critical advisories (see above).
+
+> This is a historical migration outline, not authorization to change this
+> legacy app. The README designates `ahmadzayan-hub/maktab` as canonical.
+> Plan and validate application upgrades there, then explicitly coordinate
+> this legacy deployment with its dependent client shells.
 
 ## Step-by-step (in an env with live Supabase)
 
@@ -60,6 +81,10 @@ treat it as a security fix, not just a lint/toolchain cleanup.
 
 ## Interim mitigation (until the migration lands)
 
-The one runtime advisory (`next` Server-Actions DoS) is mitigated by rate-limiting
+The earlier `next` Server-Actions DoS advisory is mitigated by rate-limiting
 / size-capping Server Action payloads at the edge (middleware or platform WAF).
 The eslint/glob/postcss items are build/CI-time only, not runtime-exploitable.
+
+
+These historical mitigations do not establish protection against the three
+critical advisories above; deployment-specific assessment remains outstanding.

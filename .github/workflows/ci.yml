@@ -42,13 +42,13 @@ jobs:
       - name: Build
         run: npm run build
 
-      # Fails only on an unaccepted CRITICAL advisory. The remaining HIGH
-      # advisories (and the 3 accepted-risk CRITICALs in `next`, documented in
-      # scripts/audit-filter.mjs) are tracked to the Next 15/16 migration in
-      # docs/NEXT_16_MIGRATION_PLAN.md; audited here for visibility without
-      # blocking, so a newly-introduced, unaccepted critical is caught
-      # immediately.
-      - name: Security audit (block new criticals)
+      - name: Security audit parser tests (offline)
+        run: node --test scripts/audit-filter.test.mjs
+
+      # Every CRITICAL blocks, including the known Next.js advisories.
+      # Invalid/incomplete audit evidence also fails closed. This is not a fix
+      # for vulnerable dependencies; see docs/NEXT_16_MIGRATION_PLAN.md.
+      - name: Security audit (block all criticals; fail closed)
         run: node scripts/audit-filter.mjs
 
   e2e:
