@@ -3,16 +3,18 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient, getUser } from "@/lib/db/supabase-server";
 import { isDemoMode } from "@/lib/demo";
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  // Next 15: route params are asynchronous.
+  const { id } = await params;
   const user = await getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const body = await req.json();
-  if (isDemoMode) return NextResponse.json({ id: params.id, ...body });
-  const supabase = createClient();
+  if (isDemoMode) return NextResponse.json({ id: id, ...body });
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from("messages")
     .update(body)
-    .eq("id", params.id)
+    .eq("id", id)
     .eq("to_id", user.id)
     .select()
     .single();

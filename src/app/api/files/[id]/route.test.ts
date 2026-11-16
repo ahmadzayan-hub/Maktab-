@@ -30,7 +30,7 @@ function makeSupabase(file: unknown) {
 }
 
 const req = {} as NextRequest;
-const ctx = (id: string) => ({ params: { id } });
+const ctx = (id: string) => ({ params: Promise.resolve({ id }) });
 
 describe("DELETE /api/files/[id] — object-level authorization (BOLA/IDOR)", () => {
   beforeEach(() => vi.clearAllMocks());

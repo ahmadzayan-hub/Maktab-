@@ -3,31 +3,35 @@ import { createClient, getUser } from "@/lib/db/supabase-server";
 import { aiChat } from "@/lib/ai/client";
 import { retrieveChunks, buildContext, extractCitations } from "@/lib/rag/retriever";
 
-export async function GET(req: NextRequest, { params }: { params: { chatId: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ chatId: string }> }) {
+  // Next 15: route params are asynchronous.
+  const { chatId } = await params;
   if (process.env.NEXT_PUBLIC_DEMO_MODE === "true") return NextResponse.json([]);
   const user = await getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  const supabase = createClient();
-  const { data, error } = await supabase.from("tutor_messages").select("*").eq("chat_id", params.chatId).eq("user_id", user.id).order("created_at");
+  const supabase = await createClient();
+  const { data, error } = await supabase.from("tutor_messages").select("*").eq("chat_id", chatId).eq("user_id", user.id).order("created_at");
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json(data);
 }
 
-export async function POST(req: NextRequest, { params }: { params: { chatId: string } }) {
+export async function POST(req: NextRequest, { params }: { params: Promise<{ chatId: string }> }) {
+  // Next 15: route params are asynchronous.
+  const { chatId } = await params;
   const { content, course_id } = await req.json();
   if (process.env.NEXT_PUBLIC_DEMO_MODE === "true") {
     const reply = `Great question! Based on your uploaded course materials, here's what I found:\n\n**Key insight**: ${content.length > 30 ? "Your question relates to a core MBA concept covered in your study packs." : "This concept is foundational to your MBA program."}\n\nFor a deeper dive, I recommend opening the relevant Study Pack · your Porter's Five Forces and DCF Valuation packs have comprehensive coverage of related frameworks.\n\n*Note: This is a demo response. Connect a real AI provider in settings to get live, context-aware tutoring from your actual uploaded files.*`;
-    return NextResponse.json({ id: `msg-${Date.now()}`, chat_id: params.chatId, role: "assistant", content: reply, citations: [], is_grounded: false, created_at: new Date().toISOString() });
+    return NextResponse.json({ id: `msg-${Date.now()}`, chat_id: chatId, role: "assistant", content: reply, citations: [], is_grounded: false, created_at: new Date().toISOString() });
   }
   const user = await getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  const supabase = createClient();
+  const supabase = await createClient();
 
   // Save user message
-  await supabase.from("tutor_messages").insert({ chat_id: params.chatId, user_id: user.id, role: "user", content });
+  await supabase.from("tutor_messages").insert({ chat_id: chatId, user_id: user.id, role: "user", content });
 
   // Get recent chat history
-  const { data: history } = await supabase.from("tutor_messages").select("role, content").eq("chat_id", params.chatId).order("created_at").limit(10);
+  const { data: history } = await supabase.from("tutor_messages").select("role, content").eq("chat_id", chatId).order("created_at").limit(10);
 
   // Retrieve context via RAG
   let contextText = "";
@@ -71,7 +75,7 @@ Rules:
 
   // Save AI response
   const { data: aiMsg, error } = await supabase.from("tutor_messages").insert({
-    chat_id: params.chatId, user_id: user.id, role: "assistant",
+    chat_id: chatId, user_id: user.id, role: "assistant",
     content: aiContent, citations, is_grounded: isGrounded,
   }).select().single();
 
@@ -79,7 +83,7 @@ Rules:
 
   // Update chat title if first exchange
   if ((history?.length ?? 0) === 0) {
-    await supabase.from("tutor_chats").update({ title: content.slice(0, 60), updated_at: new Date().toISOString() }).eq("id", params.chatId);
+    await supabase.from("tutor_chats").update({ title: content.slice(0, 60), updated_at: new Date().toISOString() }).eq("id", chatId);
   }
 
   // Log usage
