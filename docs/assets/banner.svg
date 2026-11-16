@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="400" viewBox="0 0 1280 400" role="img" aria-labelledby="t d">
+  <title id="t">Maktab</title>
+  <desc id="d">Maktab: your MBA, on one desk. A bilingual English and Arabic study workspace.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#172554"/>
+      <stop offset="0.6" stop-color="#16164d"/>
+      <stop offset="1" stop-color="#134e4a"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3b82f6"/>
+      <stop offset="1" stop-color="#4f56f5"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="400" fill="url(#bg)"/>
+  <circle cx="1180" cy="40" r="220" fill="#14b8a6" fill-opacity="0.08"/>
+  <circle cx="960" cy="380" r="160" fill="#4f56f5" fill-opacity="0.12"/>
+
+  <!-- Desk art: stacked study cards -->
+  <g transform="translate(820 92)">
+    <rect x="40" y="0" width="300" height="190" rx="22" fill="#ffffff" fill-opacity="0.06" stroke="#ffffff" stroke-opacity="0.12"/>
+    <rect x="20" y="24" width="300" height="190" rx="22" fill="#ffffff" fill-opacity="0.08" stroke="#ffffff" stroke-opacity="0.14"/>
+    <rect x="0" y="48" width="300" height="190" rx="22" fill="#ffffff" fill-opacity="0.96"/>
+    <rect x="24" y="72" width="44" height="44" rx="12" fill="url(#accent)"/>
+    <path d="M36 92 l10 -6 l10 6 l-10 6 z M40 96 v6 q6 4 12 0 v-6" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linejoin="round"/>
+    <rect x="84" y="78" width="140" height="12" rx="6" fill="#1e3a8a" fill-opacity="0.85"/>
+    <rect x="84" y="100" width="96" height="10" rx="5" fill="#93c5fd"/>
+    <rect x="24" y="140" width="252" height="10" rx="5" fill="#dbeafe"/>
+    <rect x="24" y="140" width="180" height="10" rx="5" fill="#14b8a6"/>
+    <rect x="24" y="166" width="252" height="10" rx="5" fill="#dbeafe"/>
+    <rect x="24" y="166" width="120" height="10" rx="5" fill="#f59e0b"/>
+    <rect x="24" y="196" width="76" height="22" rx="11" fill="#eef6ff"/>
+    <rect x="110" y="196" width="76" height="22" rx="11" fill="#f0fdfa"/>
+  </g>
+
+  <text x="80" y="150" font-family="Fraunces, Georgia, serif" font-size="64" font-weight="700" fill="#ffffff">Maktab</text>
+  <text x="318" y="148" direction="rtl" text-anchor="end" font-family="Tajawal, IBM Plex Sans Arabic, Noto Sans Arabic, Tahoma, sans-serif" font-size="40" fill="#5eead4">مكتب</text>
+  <text x="80" y="210" font-family="Space Grotesk, Segoe UI, system-ui, sans-serif" font-size="30" fill="#e0e7ff">Your MBA, on one desk.</text>
+  <text x="80" y="252" font-family="Space Grotesk, Segoe UI, system-ui, sans-serif" font-size="20" fill="#c2cfff">Courses, tasks, grades, study packs and an AI tutor.</text>
+  <text x="80" y="280" font-family="Space Grotesk, Segoe UI, system-ui, sans-serif" font-size="20" fill="#c2cfff">Bilingual English and Arabic, light and dark.</text>
+  <rect x="80" y="314" width="120" height="4" rx="2" fill="#14b8a6"/>
+</svg>
