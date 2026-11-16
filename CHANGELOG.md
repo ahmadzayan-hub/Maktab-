@@ -2,6 +2,14 @@
 
 ## Unreleased — Production-readiness audit (in progress)
 
+- **Security:** `next` 14.2.35 to 15.5.x. Every 14.x release carries the critical
+  image optimization remote code execution advisories (GHSA-2464-fhr4-w9xw,
+  GHSA-2xp9-vwfh-vxw4) and the Windows-host one (GHSA-p293-qw3h-jr36). The audit
+  gate added in #120 now passes with no critical vulnerabilities. Next 15 makes
+  `cookies()` and route `params` asynchronous: both server Supabase factories
+  are async with their call sites awaiting them, and ten dynamic route files
+  await `params`. High advisories in postcss (bundled in next) and zod remain
+  and need the Next 16 and zod 4 majors.
 - **Security:** upgraded `vitest` 2 to 4 and `next` 14.2.15 to 14.2.35; `npm audit`
   went from 14 vulnerabilities to 5, clearing both criticals and all moderates.
   The remaining 5 highs are all bound to the Next 16 major migration and are
