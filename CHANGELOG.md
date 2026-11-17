@@ -2,6 +2,15 @@
 
 ## Unreleased — Production-readiness audit (in progress)
 
+- **Security:** Next.js 15.5.x to 16.4.6 with React 19, and zod 3 to 4.6.7.
+  Next 16 bundles a patched postcss (8.5.23) and zod 4 closes the zod 3 memory
+  exhaustion advisory; the production audit reports 0 vulnerabilities.
+  `src/middleware.ts` became `src/proxy.ts` (export `proxy`, logic unchanged).
+  `next lint` is removed in Next 16, so `npm run lint` runs ESLint 9 with a flat
+  config; the new React Compiler hook rules are off until a refactor PR. zod 4
+  rejects an absent key on a bare `z.unknown()`, so the template body schema is
+  `.optional()` to keep accepting requests without `body`; `uuid()` is stricter
+  (RFC 9562 variants only). `src/lib/zod-contract.test.ts` pins both.
 - **Security:** `next` 14.2.35 to 15.5.x. Every 14.x release carries the critical
   image optimization remote code execution advisories (GHSA-2464-fhr4-w9xw,
   GHSA-2xp9-vwfh-vxw4) and the Windows-host one (GHSA-p293-qw3h-jr36). The audit

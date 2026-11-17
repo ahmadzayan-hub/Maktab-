@@ -16,7 +16,7 @@ const RATE_RULES: { test: RegExp; limit: number; windowMs: number }[] = [
  * auth cookie before it expires so server components and API routes see a
  * valid user. Also applies best-effort rate limiting to sensitive routes.
  */
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   try {
     const path = request.nextUrl.pathname;
     const rule = RATE_RULES.find((r) => r.test.test(path));
