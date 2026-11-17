@@ -17,6 +17,7 @@ interface TranscriptLine {
 interface Course { id: string; name: string; code: string; instructor: string; }
 
 declare global {
+  // eslint-disable-next-line no-var
   var SpeechRecognition: any;
 }
 
