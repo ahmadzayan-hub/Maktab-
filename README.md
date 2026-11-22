@@ -13,13 +13,14 @@
 > `readiness.ts`, which this copy does not have).
 >
 > **This repo is still deployed on purpose, and must stay that way for now.**
-> `desktop-tutorial-kappa-five.vercel.app` is the URL that ZAIan Studio's
-> shipped desktop, mobile and browser-extension clients open by default.
-> See `promptops/desktop/main.js`, `mobile/capacitor.config.ts`,
-> `extension/content.js` and `extension/options.js`. Those clients currently
-> show Maktab, which is a live bug. Taking this deployment down would turn a
-> wrong app into a dead one. It can be retired once those shells point
-> somewhere correct. Tracked in `docs/portfolio-audit/DUPLICATE_ANALYSIS.md`.
+> `desktop-tutorial-kappa-five.vercel.app` is the URL that already-installed
+> ZAIan Studio desktop, mobile and browser-extension clients have compiled in.
+> It serves Maktab, so those clients show the wrong app until users update.
+> The shell sources here (`desktop/main.js`, `mobile/capacitor.config.ts`,
+> `extension/content.js`, `extension/options.js`) now default to
+> `promptops-kappa.vercel.app` (ZAIan Studio), matching `promptops`. The
+> deployment can be retired once releases with that URL are cut and adopted.
+> Tracked in `docs/portfolio-audit/DUPLICATE_ANALYSIS.md`.
 >
 > What is unique here: `docs/portfolio-audit/`, the portfolio audit, and the
 > `desktop/`, `extension/` and `mobile/` shells.
